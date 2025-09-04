@@ -3,10 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>please work</title>
+    <title>Maze Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .game-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        canvas {
+            border: 2px solid #333;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .controls {
+            text-align: center;
+            color: #666;
+        }
+        
+        .win-message {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <p> what </p>
+    <h1>Maze Game</h1>
+    <div class="game-container">
+        <div class="game-area">
+            <canvas id="mazeCanvas" width="700" height="700"></canvas>
+            <button id="resetButton">Generate New Maze</button>
+            <div class="controls">
+                <p>Use W, A, S, D keys to move</p>
+                <p>Red dot = You | Red dots = Your trail</p>
+            </div>
+        </div>
+        <div id="winMessage" class="win-message" style="display: none;">Congrats you won!</div>
+    </div>
 
+    <script>
+        class MazeGame {
+            constructor() {
+                this.canvas = document.getElementById('mazeCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.cellSize = 28; // 28px per cell, 25x25 grid = 700px total
+                this.rows = 25;
+                this.cols = 25;
+                this.maze = [];
+                this.player = { x: 1, y: 1 }; // Start position
+                this.trail = [];
+                this.gameWon = false;
+                
+                this.setupEventListeners();
+                this.generateMaze();
+                this.draw();
+            }
+            
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (this.gameWon) return;
+                    
+                    const key = e.key.toLowerCase();
+                    let newX = this.player.x;
+                    let newY = this.player.y;
+                    
+                    switch(key) {
+                        case 'w':
+                            newY = Math.max(0, this.player.y - 1);
+                            break;
+                        case 's':
+                            newY = Math.min(this.rows - 1, this.player.y + 1);
+                            break;
+                        case 'a':
+                            newX = Math.max(0, this.player.x - 1);
+                            break;
+                        case 'd':
+                            newX = Math.min(this.cols - 1, this.player.x + 1);
+                            break;
+                    }
+                    
+                    if (this.canMove(newX, newY)) {
+                        // Add current position to trail
+                        this.trail.push({ x: this.player.x, y: this.player.y });
+                        this.player.x = newX;
+                        this.player.y = newY;
+                        
+                        // Check win condition
+                        if (this.player.x === this.cols - 2 && this.player.y === this.rows - 2) {
+                            this.gameWon = true;
+                            document.getElementById('winMessage').style.display = 'block';
+                        }
+                        
+                        this.draw();
+                    }
+                });
+                
+                document.getElementById('resetButton').addEventListener('click', () => {
+                    this.reset();
+                });
+            }
+            
+            generateMaze() {
+                // Initialize maze with walls
+                this.maze = Array(this.rows).fill().map(() => Array(this.cols).fill(1));
+                
+                // Use recursive backtracking to generate maze
+                const stack = [];
+                const start = { x: 1, y: 1 };
+                this.maze[start.y][start.x] = 0; // Start cell
+                stack.push(start);
+                
+                while (stack.length > 0) {
+                    const current = stack[stack.length - 1];
+                    const neighbors = this.getUnvisitedNeighbors(current);
+                    
+                    if (neighbors.length > 0) {
+                        const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                        
+                        // Remove wall between current and next
+                        const wallX = current.x + (next.x - current.x) / 2;
+                        const wallY = current.y + (next.y - current.y) / 2;
+                        this.maze[wallY][wallX] = 0;
+                        this.maze[next.y][next.x] = 0;
+                        
+                        stack.push(next);
+                    } else {
+                        stack.pop();
+                    }
+                }
+                
+                // Ensure end is accessible
+                this.maze[this.rows - 2][this.cols - 2] = 0;
+            }
+            
+            getUnvisitedNeighbors(cell) {
+                const neighbors = [];
+                const directions = [
+                    { x: 0, y: -2 }, // Up
+                    { x: 2, y: 0 },  // Right
+                    { x: 0, y: 2 },  // Down
+                    { x: -2, y: 0 }  // Left
+                ];
+                
+                for (const dir of directions) {
+                    const newX = cell.x + dir.x;
+                    const newY = cell.y + dir.y;
+                    
+                    if (newX > 0 && newX < this.cols - 1 && 
+                        newY > 0 && newY < this.rows - 1 && 
+                        this.maze[newY][newX] === 1) {
+                        neighbors.push({ x: newX, y: newY });
+                    }
+                }
+                
+                return neighbors;
+            }
+            
+            canMove(x, y) {
+                return this.maze[y][x] === 0;
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'white';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw maze walls
+                this.ctx.fillStyle = 'black';
+                for (let y = 0; y < this.rows; y++) {
+                    for (let x = 0; x < this.cols; x++) {
+                        if (this.maze[y][x] === 1) {
+                            this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+                        }
+                    }
+                }
+                
+                // Draw trail
+                this.ctx.fillStyle = 'red';
+                for (const point of this.trail) {
+                    this.ctx.fillRect(
+                        point.x * this.cellSize + 1, 
+                        point.y * this.cellSize + 1, 
+                        this.cellSize - 2, 
+                        this.cellSize - 2
+                    );
+                }
+                
+                // Draw player
+                this.ctx.fillStyle = 'red';
+                this.ctx.fillRect(
+                    this.player.x * this.cellSize + 1, 
+                    this.player.y * this.cellSize + 1, 
+                    this.cellSize - 2, 
+                    this.cellSize - 2
+                );
+                
+                // Draw start and end markers
+                this.ctx.fillStyle = 'green';
+                this.ctx.fillRect(1 * this.cellSize + 1, 1 * this.cellSize + 1, this.cellSize - 2, this.cellSize - 2);
+                
+                this.ctx.fillStyle = 'blue';
+                this.ctx.fillRect((this.cols - 2) * this.cellSize + 1, (this.rows - 2) * this.cellSize + 1, this.cellSize - 2, this.cellSize - 2);
+            }
+            
+            reset() {
+                this.player = { x: 1, y: 1 };
+                this.trail = [];
+                this.gameWon = false;
+                document.getElementById('winMessage').style.display = 'none';
+                this.generateMaze();
+                this.draw();
+            }
+        }
+        
+        // Initialize the game when the page loads
+        window.addEventListener('load', () => {
+            new MazeGame();
+        });
+    </script>
 </body>
 </html>
