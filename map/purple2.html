@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fantasy World Map</title>
+
+        <style>
+            body {
+                margin: 0;
+                padding: 20px;
+                background-color: #0f1a12; 
+                color: #e8e5d9; 
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 100vh;
+            }
+
+            .main-content {
+                display: flex;
+                align-items: flex-start;
+                gap: 40px;
+                max-width: 1400px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            h1 {
+                color: #c8b88a; 
+                text-align: center;
+                margin-bottom: 20px;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            }
+            .nav-link {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                color: #c8b88a; 
+                text-decoration: none;
+                padding: 8px 16px;
+                border: 1px solid #6b8e23; 
+                border-radius: 5px;
+                transition: all 0.3s ease;
+                background: rgba(37, 50, 39, 0.6);
+            }
+
+            .nav-link:hover {
+                background-color: #6b8e23;
+                color: #0f1a12;
+            }
+        </style>
+    </head>
+    <body>
+
+        <a href="index.html" class="nav-link">back to map</a><!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Fantasy World Map</title>
+        
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                        background-color: #0f1a12; 
+                        color: #e8e5d9; 
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        min-height: 100vh;
+                    }
+        
+                    .main-content {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 40px;
+                        max-width: 1400px;
+                        width: 100%;
+                        justify-content: center;
+                    }
+        
+                    h1 {
+                        color: #c8b88a; 
+                        text-align: center;
+                        margin-bottom: 20px;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+                    }
+        
+                    .map-container {
+                        position: relative;
+                        display: inline-block;
+                        margin: 0 auto 30px auto;
+                        border: 3px solid #6b8e23; 
+                        border-radius: 10px;
+                        box-shadow: 0 0 20px rgba(64, 87, 33, 0.4); 
+                        width: auto; 
+                        max-width: none;
+                        min-width: 0;
+                        line-height: 0; 
+                    }
+        
+                    .map-layer {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        transition: opacity 0.3s ease;
+                        z-index: 2;
+                    }
+        
+                    .map-base {
+                        position: relative;
+                        display: block;
+                        width: 50vw; 
+                        max-width: 800px;
+                        min-width: 300px;
+                        height: auto; 
+                        z-index: 1;
+                    }
+        
+                    .map-overlay {
+                        opacity: 1;
+                    }
+        
+                    .map-overlay.hidden {
+                        opacity: 0;
+                    }
+        
+                    .controls {
+                        display: flex;
+                        gap: 15px;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        margin-top: 20px;
+                        margin-bottom: 20px;
+                    }
+        
+                    .toggle-btn {
+                        background: linear-gradient(145deg, #3a4a3b, #253227); 
+                        color: #d9caa3; 
+                        border: 2px solid #6b8e23; 
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        font-weight: bold;
+                        transition: all 0.3s ease;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+        
+                    .toggle-btn:hover {
+                        background: linear-gradient(145deg, #6b8e23, #4e6a19); 
+                        color: #0f1a12; 
+                        transform: translateY(-2px);
+                        box-shadow: 0 5px 15px rgba(107, 142, 35, 0.4);
+                    }
+        
+                    .toggle-btn.active {
+                        background: linear-gradient(145deg, #6b8e23, #4e6a19);
+                        color: #0f1a12;
+                        box-shadow: 0 0 15px rgba(107, 142, 35, 0.6);
+                    }
+        
+                    .nav-link {
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        color: #c8b88a; 
+                        text-decoration: none;
+                        padding: 8px 16px;
+                        border: 1px solid #6b8e23; 
+                        border-radius: 5px;
+                        transition: all 0.3s ease;
+                        background: rgba(37, 50, 39, 0.6);
+                    }
+        
+                    .nav-link:hover {
+                        background-color: #6b8e23;
+                        color: #0f1a12;
+                    }
+        
+                    .index-key {
+                        background: linear-gradient(145deg, #2b372d, #1c261e); 
+                        border: 2px solid #6b8e23;
+                        border-radius: 10px;
+                        padding: 20px;
+                        min-width: 200px;
+                        box-shadow: 0 0 15px rgba(64, 87, 33, 0.3);
+                        margin-left: -250px;
+                    }
+        
+                    .index-key h3 {
+                        color: #c8b88a;
+                        text-align: center;
+                        margin: 0 0 20px 0;
+                        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    }
+        
+                    .territory-btn {
+                        background: linear-gradient(145deg, #3a4a3b, #253227);
+                        color: #d9caa3;
+                        border: 1px solid #6b8e23;
+                        padding: 10px 15px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        transition: all 0.3s ease;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        width: 100%;
+                        margin-bottom: 8px;
+                        display: block;
+                    }
+                    a:link {
+          color: #d9caa3;
+          background-color: transparent;
+          text-decoration: none;
+        }
+        
+        a:visited {
+          color: #d9caa3;
+          background-color: transparent;
+          text-decoration: none;
+        }
+        
+        a:hover {
+          color: #d9caa3;
+          background-color: transparent;
+          text-decoration: underline;
+        }
+        
+        a:active {
+          color: #d9caa3;
+          background-color: transparent;
+          text-decoration: underline;
+        }
+        
+                    .territory-btn:hover {
+                        background: linear-gradient(145deg, #6b8e23, #4e6a19);
+                        color: #0f1a12;
+                        transform: translateY(-1px);
+                        box-shadow: 0 3px 10px rgba(107, 142, 35, 0.4);
+                    }
+        
+                    .territory-btn.sub-btn {
+                        font-size: 12px;
+                        padding: 8px 12px;
+                        margin-left: 15px;
+                        margin-bottom: 5px;
+                        width: calc(100% - 15px);
+                    }
+        
+                    .territory-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        opacity: 0;
+                        transition: opacity 0.3s ease;
+                        pointer-events: none;
+                        z-index: 3;
+                    }
+        
+                    .territory-overlay.visible {
+                        opacity: 1;
+                    }
+                </style>
+        
+            </head>
+            <body>
+                <a href="index.html" class="nav-link">back to map</a>
+                
+                <h1>Purple2</h1>
+                
+                <div class="controls">
+                    <button class="toggle-btn" id="hubsBtn" onclick="toggleLayer('hubs')">
+                        Connection Hubs
+                    </button>
+                    <button class="toggle-btn" id="connectionsBtn" onclick="toggleLayer('connections')">
+                        Connections
+                    </button>
+                </div>
+        
+                <div class="main-content">
+                    <div class="map-container">
+                        
+                        <img src="mapphotos/purple2map.png" alt="Fantasy World Map" class="map-layer map-base" id="baseMap">
+             
+                        
+                        <img src="mapphotos/connections.png" alt="Connections" class="map-layer map-overlay hidden" id="connections" style="z-index: 5;">
+                        
+                        
+                        <img src="mapphotos/hub.png" alt="Connection Hubs" class="map-layer map-overlay hidden" id="hubs" style="z-index: 6;">
+        
+                        
+                        <img src="mapphotos/purple.png" alt="Purple Territory" class="territory-overlay" id="purple-overlay">
+                        <img src="mapphotos/purple1.png" alt="Purple1 Territory" class="territory-overlay" id="purple1-overlay">
+                        <img src="mapphotos/purple2.png" alt="Purple2 Territory" class="territory-overlay" id="purple2-overlay">
+                        <img src="mapphotos/green.png" alt="Green Territory" class="territory-overlay" id="green-overlay">
+                        <img src="mapphotos/green1.png" alt="Green1 Territory" class="territory-overlay" id="green1-overlay">
+                        <img src="mapphotos/yellow.png" alt="Yellow Territory" class="territory-overlay" id="yellow-overlay">
+                        <img src="mapphotos/red.png" alt="Red Territory" class="territory-overlay" id="red-overlay">
+                        <img src="mapphotos/blue.png" alt="Blue Territory" class="territory-overlay" id="blue-overlay">
+                    </div>
+        
+                    <div class="index-key">
+                        <h3>Sub Territory of:</h3>
+                        <button class="territory-btn" onmouseenter="showTerritory('purple')" onmouseleave="hideTerritory('purple')">
+                            <a href="purple.html">Purple</a>
+                        </button>
+        
+                        <h3></h3>
+                        <h3>Allied Territories Index</h3>
+                        <button class="territory-btn" onmouseenter="showTerritory('purple1')" onmouseleave="hideTerritory('purple1')">
+                            <a href="purple1.html">Purple1</a>
+                        </button>
+                        <button class="territory-btn" onmouseenter="showTerritory('yellow')" onmouseleave="hideTerritory('yellow')">
+                            <a href="yellow.html">Yellow</a>
+                        </button>
+        
+                        <h3></h3>
+                        <h3>Enemy Territories Index</h3>
+                        <button class="territory-btn" onmouseenter="showTerritory('green1')" onmouseleave="hideTerritory('green1')">
+                            <a href="green1.html">Green1</a>
+                        </button>
+                        
+                        <!--
+                        <button class="territory-btn sub-btn" onmouseenter="showTerritory('purple1')" onmouseleave="hideTerritory('purple1')">
+                            <a href="purple1.html">Purple1</a>
+                        </button>
+                        <button class="territory-btn sub-btn" onmouseenter="showTerritory('purple2')" onmouseleave="hideTerritory('purple2')">
+                            <a href="purple2.html">Purple2</a>
+                        </button>
+                        <button class="territory-btn" onmouseenter="showTerritory('green')" onmouseleave="hideTerritory('green')">
+                            <a href="green.html">Green</a>
+                        </button>
+                        <button class="territory-btn sub-btn" onmouseenter="showTerritory('green1')" onmouseleave="hideTerritory('green1')">
+                            <a href="green1.html">Green1</a>
+                        </button>
+                        <button class="territory-btn" onmouseenter="showTerritory('yellow')" onmouseleave="hideTerritory('yellow')">
+                            <a href="yellow.html">Yellow</a>
+                        </button>
+                        <button class="territory-btn" onmouseenter="showTerritory('red')" onmouseleave="hideTerritory('red')">
+                            <a href="red.html">Red</a>
+                        </button>
+                        <button class="territory-btn" onmouseenter="showTerritory('blue')" onmouseleave="hideTerritory('blue')">
+                            <a href="blue.html">Blue</a>
+                        </button>
+                        -->
+                    </div>
+                </div>
+        
+        
+        
+                <script>
+                    function toggleLayer(layerId) {
+                        const layer = document.getElementById(layerId);
+                        const button = document.getElementById(layerId + 'Btn');
+                        
+                        if (layer.classList.contains('hidden')) {
+                            layer.classList.remove('hidden');
+                            button.classList.add('active');
+                        } else {
+                            layer.classList.add('hidden');
+                            button.classList.remove('active');
+                        }
+                    }
+        
+                    function showTerritory(territoryName) {
+                        const overlay = document.getElementById(territoryName + '-overlay');
+                        if (overlay) {
+                            overlay.classList.add('visible');
+                        }
+                    }
+        
+                    function hideTerritory(territoryName) {
+                        const overlay = document.getElementById(territoryName + '-overlay');
+                        if (overlay) {
+                            overlay.classList.remove('visible');
+                        }
+                    }
+        
+                    
+                    window.addEventListener('load', function() {
+                        const baseMap = document.getElementById('baseMap');
+                        const overlays = document.querySelectorAll('.map-overlay');
+                        const territoryOverlays = document.querySelectorAll('.territory-overlay');
+                        
+                        
+                        overlays.forEach(overlay => {
+                            overlay.style.width = '100%';
+                            overlay.style.height = '100%';
+                            overlay.style.objectFit = 'contain';
+                        });
+        
+                        
+                        territoryOverlays.forEach(overlay => {
+                            overlay.style.width = '100%';
+                            overlay.style.height = '100%';
+                            overlay.style.objectFit = 'contain';
+                        });
+                    });
+                </script>
+            </body>
+        </html>
+
+
+
+
+
+
+
+    </body>
+    </html>
