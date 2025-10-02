@@ -1,5 +1,5 @@
 (function () {
-    const easeFactor = 0.08; // lower = slower easing
+    const easeFactor = 0.18; // lower = slower easing
     let targetX = 50; // percentage
     let targetY = 50; // percentage
     let currentX = targetX;
@@ -7,8 +7,8 @@
 
     function onMouseMove(e) {
         const { innerWidth: w, innerHeight: h } = window;
-        const nx = (e.clientX / w) * 100; // 0..100
-        const ny = (e.clientY / h) * 100; // 0..100
+        const nx = (e.clientX / w) * 500; // 0..100
+        const ny = (e.clientY / h) * 500; // 0..100
         // Map to a smaller range around center for subtle motion
         const range = 10; // +/- 10%
         targetX = 50 + ((nx - 50) * (range / 50));
